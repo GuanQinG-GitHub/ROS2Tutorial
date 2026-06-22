@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installing ROS2 Jazzy — Tutorial to Robotic Simulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">&#9776;</button>
+<div class="overlay" id="overlay"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>Tutorial to Robotic Simulation</h1>
+  </div>
+  <div class="sidebar-nav">
+    <a href="index.html">Installing the Virtual Machine</a>
+    <a href="installing-ros2.html" class="active">Installing ROS2 Jazzy</a>
+    <a href="installing-turtlebot3.html">Installing TurtleBot3 Packages</a>
+    <a href="gazebo.html">First Play with Gazebo</a>
+    <a href="slam.html">SLAM</a>
+    <a href="navigation.html">Navigation</a>
+    <a href="unitree-go2.html">Unitree Go2 &amp; Teleoperating</a>
+  </div>
+</nav>
+
+<div class="main">
+  <h1 class="page-title">Installing ROS2 Jazzy</h1>
+  <div class="admonition">
+      <div class="admonition-title">Note</div>
+      <p>The following steps take approximately 20 minutes to complete.</p>
+  </div>
+  <div class="section">
+    <p>
+      Before proceeding, make sure you have completed the previous section and have a running <span class="highlight-text">Ubuntu 24.04</span> virtual machine.
+    </p>
+    <h3>Step 0: Get Familiar with Ubuntu and the Command Line</h3>
+    <h4>Terminal</h4>
+    <p>
+      Move your cursor into the virtual machine screen, right-click anywhere, and select <code>Open in Terminal</code>. A terminal window will appear as shown in the figure below. In the prompt, <code>xinlei</code> is the username, <code>xinlei-QEMU-Virtual-Machine</code> is the machine name, <code>~/Desktop</code> is the current directory, and <code>$</code> is the prompt indicator — anything you type after it is a command to be executed.
+    </p>
+    <div class="figure">
+          <img src="Figures/ROS1.png">
+    </div>
+    <div class="admonition">
+      <div class="admonition-title">Note</div>
+      <p>Throughout this tutorial, all commands are provided directly. Feel free to search online or ask an AI assistant to learn what each command does.</p>
+    </div>
+    <h4>Clipboard Sharing</h4>
+    <p>
+      Next, we need to set up clipboard sharing between your host machine and the virtual machine. Throughout this tutorial, you will frequently copy commands on your host and paste them into the virtual machine's terminal to execute.
+    </p>
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="macos">MacOS</button>
+        <button class="tab-btn" data-tab="windows">Windows</button>
+      </div>
+      <div class="tab-content active" id="tab-macos">
+        <p> For MacOS users, UTM should already setup this clipboard sharing. </p>
+      </div>
+      <div class="tab-content" id="tab-windows">
+      </div>
+    </div>
+    <p>To test clipboard sharing, copy any text on your host machine, then switch to the terminal in the virtual machine. Right-click in the terminal and select <code>Paste</code> — you should see the copied text appear. A few useful keyboard shortcuts: press <code>Ctrl+C</code> to cancel the current command and start a new line, and use the <code>Up/Down arrow</code> keys to navigate through your command history.</p>
+
+    <h3>Step 1: Environment Setup</h3>
+    <p>The following steps are adapted from the official ROS2 documentation at <a class="inline-link" href="https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html" target="_blank">https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html</a>. Refer to their website for more details about ROS2 Jazzy.</p>
+    <p>
+      Copy and paste the commands below into the virtual machine terminal. These commands configure the environment required for the ROS2 installation. <span class="highlight-text">You will be prompted for your password once, and may need to confirm certain operations by typing <code>y</code> and pressing <code>Enter</code>. This step takes approximately 1 minute.</span>
+    </p>
+    <div class="admonition">
+      <div class="admonition-title">Note</div>
+      <p>Hover over a code block to reveal the <code>Copy</code> button. Clicking it copies all commands to your clipboard, ready to paste directly into the virtual machine terminal.</p>
+      <div class="figure">
+            <img src="Figures/ROS2.png">
+      </div>
+    </div>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ sudo apt update && sudo apt install locales
+$ sudo locale-gen en_US en_US.UTF-8
+$ sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+$ export LANG=en_US.UTF-8
+$ sudo apt install software-properties-common
+$ sudo add-apt-repository universe
+$ sudo apt update && sudo apt install curl -y
+$ export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F'"' '{print $4}')
+$ curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb"
+$ sudo dpkg -i /tmp/ros2-apt-source.deb
+$ sudo apt update && sudo apt install ros-dev-tools
+$ sudo apt update && sudo apt upgrade</code></pre>
+    </div>
+    <h3>Step 2: Install ROS2 Jazzy</h3>
+    <p>Copy and paste the following commands into the virtual machine terminal to install ROS2 Jazzy. <span class="highlight-text">This step takes approximately 10 minutes.</span></p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ sudo apt install ros-jazzy-desktop
+$ echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc</code></pre>
+    </div>
+    <h3>Step 3: Verify the Installation</h3>
+    <p>Run the following command to verify that ROS2 Jazzy is installed correctly:</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ which ros2</code></pre>
+    </div>
+    <p>If the output is <code>/opt/ros/jazzy/bin/ros2</code>, congratulations — ROS2 Jazzy is successfully installed!</p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
