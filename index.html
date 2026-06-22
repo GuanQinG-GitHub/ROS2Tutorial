@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROS2 Tutorial</title>
+<title>Tutorial to Robotic Simulation</title>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ── */
@@ -131,7 +131,11 @@ body {
 
 /* ── Section ── */
 .section {
+  display: none;
   margin-bottom: 48px;
+}
+.section.active {
+  display: block;
 }
 .section h2 {
   font-family: var(--font-heading);
@@ -284,6 +288,34 @@ a:hover {
   text-decoration: underline;
 }
 
+/* ── Inline link (clickable reference) ── */
+a.inline-link {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a.inline-link:hover {
+  color: var(--link-hover);
+}
+
+/* ── Figure block ── */
+.figure {
+  margin: 20px 0;
+  text-align: center;
+}
+.figure img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+}
+.figure .caption {
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #666;
+  font-style: italic;
+}
+
 /* ── Lists ── */
 .section ul, .section ol {
   margin: 0 0 14px 24px;
@@ -322,11 +354,11 @@ a:hover {
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <h1>ROS2 Tutorial</h1>
-    <p>Jazzy Jalisco</p>
+    <h1>Tutorial to Robotic Simulation</h1>
+    <!-- <p>Jazzy Jalisco</p> -->
   </div>
   <div class="sidebar-nav" id="sidebarNav">
-    <a href="#installing-vm">Installing the Virtual Machine</a>
+    <a href="#installing-vm" class="active">Installing the Virtual Machine</a>
     <a href="#installing-ros2">Installing ROS2 Jazzy</a>
     <a href="#installing-turtlebot3">Installing TurtleBot3 Packages</a>
     <a href="#gazebo">First Play with Gazebo</a>
@@ -338,16 +370,14 @@ a:hover {
 
 <!-- Main content -->
 <div class="main">
-  <h1 class="page-title">ROS2 Tutorial</h1>
+  <h1 class="page-title">Installing the Virtual Machine</h1>
 
   <!-- ════════════════════════════════════════════ -->
   <!-- Section 1: Installing the Virtual Machine    -->
   <!-- ════════════════════════════════════════════ -->
-  <div class="section" id="installing-vm">
-    <h2>1. Installing the Virtual Machine</h2>
+  <div class="section active" id="installing-vm">
     <p>
-      This section walks you through setting up a virtual machine for ROS2 development.
-      Choose your host operating system below.
+      ROS2 and most robotics simulation tools run on Linux, which differs from the macOS or Windows operating system you are likely using. This section walks you through setting up a Linux virtual machine for ROS2 development. Choose your host operating system below.
     </p>
 
     <div class="tabs">
@@ -356,17 +386,95 @@ a:hover {
         <button class="tab-btn" data-tab="windows">Windows</button>
       </div>
       <div class="tab-content active" id="tab-macos">
-        <h3>MacOS Setup</h3>
+        <p><span class="highlight-text">The following steps take approximately 45 minutes to complete.</span></p>
+        <h3>Step 1: Install the UTM Application</h3>
         <p>
-          Placeholder paragraph for MacOS instructions. You can use
-          <span class="highlight-text">highlighted text</span> to draw attention to important notes,
-          and <code>inline code</code> for commands or file paths.
+          UTM is the virtualization tool we will use to create and run a Linux virtual machine on macOS. Visit <a class="inline-link" href="https://mac.getutm.app/" target="_blank">https://mac.getutm.app/</a> to download and install UTM. Once installed, open the application — we will return to it shortly.
         </p>
-        <div class="code-block-wrapper">
-          <button class="copy-btn">Copy</button>
-          <pre><code>$ brew install --cask utm
-$ # Download the Ubuntu 24.04 ARM image</code></pre>
+        <h3>Step 2: Download the Ubuntu 24.04 Image</h3>
+        <p>
+          Navigate to <a class="inline-link" href="https://cdimage.ubuntu.com/releases/24.04/release/" target="_blank">https://cdimage.ubuntu.com/releases/24.04/release/</a> to download the Desktop image. Make sure you select the <span class="highlight-text">ARMv8</span> version, not AMD (which is for Windows/Intel systems). The download may take up to 20 minutes depending on server availability.
+        </p>
+        <div class="figure">
+          <img src="Figures/Mac_Ubuntu2404.png">
+          <!-- <div class="caption">Figure 1: Ubuntu 24.04 running on MacOS via UTM</div> -->
         </div>
+        <h3>Step 3: Create the Virtual Machine</h3>
+        <p>
+          Follow these steps to create the Ubuntu 24.04 virtual machine in UTM:
+        </p>
+        <ul>
+          <li>Open UTM and click <code>Create a New Virtual Machine</code>.</li>
+          <li>Select <code>Virtualize</code>.</li>
+          <li>Choose <code>Linux</code> as the operating system.</li>
+          <li>Configure the hardware settings: set memory to at least <code>8192</code> MiB, CPU cores to at least <code>4</code>, and enable <code>Enable hardware OpenGL acceleration</code> (<code>Enable display output</code> should already be checked by default).</li>
+          <li>Browse to the <code>.iso</code> image you downloaded in Step 2.</li>
+          <li>Set the storage size to at least <code>100</code> GiB.</li>
+          <li>For the shared directory, create a new folder on your host machine first, then browse to it. This folder will be shared between your macOS host and the Ubuntu virtual machine.</li>
+          <li>Review the summary and click <code>Save</code>.</li>
+        </ul>
+        <h3>Step 4: Install Ubuntu on the Virtual Machine</h3>
+        <p>
+            Click the play button to start the virtual machine. A new window will appear showing the UTM logo, followed by the Ubuntu installation screen below.
+        </p>
+        <div class="figure">
+          <img src="Figures/Ubuntu2.png">
+        </div>
+        <p>
+            Press <code>Enter</code> to begin the installation. After approximately <span class="highlight-text">30 seconds</span>, you will see the screen below, indicating that Ubuntu 24.04 has been <span class="highlight-text">successfully</span> loaded. Click the window to continue.
+        </p>
+        <div class="figure">
+          <img src="Figures/Ubuntu3.png">
+        </div>
+        <p>
+            Next, proceed through the initial setup:
+        </p>
+        <ul>
+          <li>Click <code>Next</code> to accept the defaults for <code>Language</code>, <code>Accessibility</code>, <code>Keyboard Layout</code>, and <code>Internet Connection</code>.</li>
+          <li><span class="highlight-text">Do not</span> click <code>Update now</code> — click <code>Skip</code> instead. Updating may upgrade Ubuntu to a newer version that is incompatible with ROS2 Jazzy.</li>
+          <li>Keep the default <code>Install Ubuntu</code> and click <code>Next</code>.</li>
+          <li>Keep the default <code>Interactive installation</code> and click <code>Next</code>.</li>
+          <li>Keep the default <code>Default selection</code> and click <code>Next</code>.</li>
+          <li>Check both <code>Install third-party software for graphics and Wi-Fi hardware</code> and <code>Download and install support for additional media formats</code>.</li>
+          <li>Keep the default <code>Erase disk and install Ubuntu</code> and click <code>Next</code>.</li>
+          <li>Create your account name, computer name, username, and password. Choose a short, simple password — you will need to enter it frequently.</li>
+          <li>Select your timezone and click <code>Install</code>. The installation takes approximately <span class="highlight-text">10 minutes</span>.</li>
+        </ul>
+        <p>
+            When the installation is complete, you will see the screen below. Click <code>Restart now</code>.
+        </p>
+        <div class="figure">
+          <img src="Figures/Ubuntu4.png">
+          <!-- <div class="caption">Figure 1: Ubuntu 24.04 running on MacOS via UTM</div> -->
+        </div>
+        <p>
+            You will see an error line as shown below. This is expected. Turn off the virtual machine and confirm when prompted about unsaved changes.
+        </p>
+        <div class="figure">
+          <img src="Figures/Ubuntu5.png">
+        </div>
+        <p>
+            Before restarting, we need to remove a USB driver that causes boot issues. Follow these steps (see the figure below for reference):
+        </p>
+        <ul>
+          <li>Click the settings button in the upper-right corner to open the VM settings.</li>
+          <li>Scroll down to find the USB drive entry and select it.</li>
+          <li>Delete the drive and confirm the deletion.</li>
+          <li>Save the changes.</li>
+          <li>Restart the virtual machine. You may briefly see a black screen with the message <code>Display output is not active</code> while it boots — this is normal.</li>
+        </ul>
+        <div class="figure">
+          <img src="Figures/Ubuntu6.png">
+        </div>
+        <p>
+            Once the system finishes booting, you will see the login screen below. Click your username and enter your password.
+        </p>
+        <div class="figure">
+          <img src="Figures/Ubuntu7.png">
+        </div>
+        <p>
+          Congratulations — you have successfully installed the virtual machine!
+        </p>
       </div>
       <div class="tab-content" id="tab-windows">
         <h3>Windows Setup</h3>
@@ -536,21 +644,28 @@ overlay.addEventListener('click', () => {
   overlay.classList.remove('open');
 });
 
-// ── Active sidebar link on scroll ──
+// ── Section switching via sidebar ──
 const sections = document.querySelectorAll('.section');
 const navLinks = document.querySelectorAll('.sidebar-nav a');
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navLinks.forEach(link => link.classList.remove('active'));
-      const active = document.querySelector('.sidebar-nav a[href="#' + entry.target.id + '"]');
-      if (active) active.classList.add('active');
-    }
-  });
-}, { rootMargin: '-20% 0px -70% 0px' });
+function showSection(id) {
+  sections.forEach(s => s.classList.remove('active'));
+  navLinks.forEach(a => a.classList.remove('active'));
+  const target = document.getElementById(id);
+  const link = document.querySelector('.sidebar-nav a[href="#' + id + '"]');
+  if (target) target.classList.add('active');
+  if (link) link.classList.add('active');
+  window.scrollTo(0, 0);
+}
 
-sections.forEach(s => observer.observe(s));
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    showSection(link.getAttribute('href').slice(1));
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+});
 </script>
 </body>
 </html>
