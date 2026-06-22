@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROS2 Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Root variables ── */
+:root {
+  --sidebar-width: 300px;
+  --sidebar-bg: #343131;
+  --nav-header-bg: #2980b9;
+  --content-bg: #fcfcfc;
+  --text-color: #404040;
+  --heading-color: #404040;
+  --link-color: #2980b9;
+  --link-hover: #3091d1;
+  --inline-code-color: #e74c3c;
+  --code-bg: #f8f8f8;
+  --code-border: #e1e4e5;
+  --highlight-bg: #f1c40f;
+  --highlight-text: #000;
+  --admonition-bg: #e7f2fa;
+  --admonition-border: #6ab0de;
+  --tab-active: #2980b9;
+  --tab-inactive-bg: #e0e0e0;
+  --font-body: 'Lato', sans-serif;
+  --font-heading: 'Roboto Slab', serif;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-color);
+  background: var(--content-bg);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: var(--sidebar-bg);
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+.sidebar-header {
+  background: var(--nav-header-bg);
+  padding: 20px;
+  text-align: center;
+}
+.sidebar-header h1 {
+  font-family: var(--font-heading);
+  font-size: 1.4em;
+  color: #fff;
+  margin: 0;
+}
+.sidebar-header p {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+.sidebar-nav {
+  padding: 12px 0;
+}
+.sidebar-nav a {
+  display: block;
+  padding: 8px 24px;
+  color: #d9d9d9;
+  text-decoration: none;
+  font-size: 0.92em;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.sidebar-nav a:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+.sidebar-nav a.active {
+  background: rgba(255,255,255,0.1);
+  border-left-color: var(--nav-header-bg);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ── Mobile hamburger ── */
+.menu-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  background: var(--nav-header-bg);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 90;
+}
+
+/* ── Main content ── */
+.main {
+  margin-left: var(--sidebar-width);
+  max-width: 800px;
+  padding: 30px 40px 80px;
+}
+.main > .page-title {
+  font-family: var(--font-heading);
+  font-size: 2em;
+  color: var(--heading-color);
+  border-bottom: 1px solid #e1e4e5;
+  padding-bottom: 12px;
+  margin-bottom: 28px;
+}
+
+/* ── Section ── */
+.section {
+  margin-bottom: 48px;
+}
+.section h2 {
+  font-family: var(--font-heading);
+  font-size: 1.6em;
+  color: var(--heading-color);
+  border-bottom: 1px solid #e1e4e5;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+.section h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25em;
+  color: var(--heading-color);
+  margin: 20px 0 10px;
+}
+.section p {
+  margin-bottom: 14px;
+}
+
+/* ── Inline code ── */
+code {
+  background: #fff;
+  border: 1px solid var(--code-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 0.88em;
+  color: var(--inline-code-color);
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+/* ── Inline highlight ── */
+.highlight-text {
+  background: var(--highlight-bg);
+  color: var(--highlight-text);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+/* ── Code block ── */
+.code-block-wrapper {
+  position: relative;
+  margin: 16px 0;
+}
+.code-block-wrapper pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.85em;
+  line-height: 1.55;
+  color: var(--text-color);
+}
+.code-block-wrapper pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #e1e4e5;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 0.78em;
+  color: #555;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.code-block-wrapper:hover .copy-btn {
+  opacity: 1;
+}
+.copy-btn:hover {
+  background: #d1d4d5;
+}
+.copy-btn.copied {
+  background: #27ae60;
+  color: #fff;
+}
+
+/* ── Tabs (Section 1) ── */
+.tabs {
+  margin: 16px 0;
+}
+.tab-buttons {
+  display: flex;
+  border-bottom: 2px solid #e1e4e5;
+  margin-bottom: 0;
+}
+.tab-btn {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 0.95em;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab-btn:hover {
+  color: var(--text-color);
+}
+.tab-btn.active {
+  color: var(--tab-active);
+  border-bottom-color: var(--tab-active);
+  font-weight: 700;
+}
+.tab-content {
+  display: none;
+  border: 1px solid #e1e4e5;
+  border-top: none;
+  padding: 20px;
+  background: #fff;
+  border-radius: 0 0 4px 4px;
+}
+.tab-content.active {
+  display: block;
+}
+
+/* ── Admonition / Note ── */
+.admonition {
+  background: var(--admonition-bg);
+  border-left: 4px solid var(--admonition-border);
+  padding: 14px 18px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+}
+.admonition .admonition-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #2c3e50;
+}
+
+/* ── Links ── */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* ── Lists ── */
+.section ul, .section ol {
+  margin: 0 0 14px 24px;
+}
+.section li {
+  margin-bottom: 6px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left: 0;
+    padding: 60px 20px 60px;
+  }
+  .menu-toggle {
+    display: block;
+  }
+  .overlay.open {
+    display: block;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile hamburger -->
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">&#9776;</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h1>ROS2 Tutorial</h1>
+    <p>Jazzy Jalisco</p>
+  </div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <a href="#installing-vm">Installing the Virtual Machine</a>
+    <a href="#installing-ros2">Installing ROS2 Jazzy</a>
+    <a href="#installing-turtlebot3">Installing TurtleBot3 Packages</a>
+    <a href="#gazebo">First Play with Gazebo</a>
+    <a href="#slam">SLAM</a>
+    <a href="#navigation">Navigation</a>
+    <a href="#unitree-go2">Unitree Go2 &amp; Teleoperating</a>
+  </div>
+</nav>
+
+<!-- Main content -->
+<div class="main">
+  <h1 class="page-title">ROS2 Tutorial</h1>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 1: Installing the Virtual Machine    -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="installing-vm">
+    <h2>1. Installing the Virtual Machine</h2>
+    <p>
+      This section walks you through setting up a virtual machine for ROS2 development.
+      Choose your host operating system below.
+    </p>
+
+    <div class="tabs">
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="macos">MacOS</button>
+        <button class="tab-btn" data-tab="windows">Windows</button>
+      </div>
+      <div class="tab-content active" id="tab-macos">
+        <h3>MacOS Setup</h3>
+        <p>
+          Placeholder paragraph for MacOS instructions. You can use
+          <span class="highlight-text">highlighted text</span> to draw attention to important notes,
+          and <code>inline code</code> for commands or file paths.
+        </p>
+        <div class="code-block-wrapper">
+          <button class="copy-btn">Copy</button>
+          <pre><code>$ brew install --cask utm
+$ # Download the Ubuntu 24.04 ARM image</code></pre>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-windows">
+        <h3>Windows Setup</h3>
+        <p>
+          Placeholder paragraph for Windows instructions. Use
+          <span class="highlight-text">highlighted text</span> for key points,
+          and <code>inline code</code> for paths like <code>C:\Users\</code>.
+        </p>
+        <div class="code-block-wrapper">
+          <button class="copy-btn">Copy</button>
+          <pre><code>$ wsl --install -d Ubuntu-24.04
+$ # WSL will restart your machine</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 2: Installing ROS2 Jazzy Debian      -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="installing-ros2">
+    <h2>2. Installing ROS2 Jazzy Debian</h2>
+    <p>
+      Placeholder paragraph describing the ROS2 Jazzy Debian installation process.
+      Make sure your system is running <span class="highlight-text">Ubuntu 24.04 (Noble Numbat)</span>.
+    </p>
+    <p>
+      You will need to add the ROS2 apt repository and install the <code>ros-jazzy-desktop</code> package.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ sudo apt update &amp;&amp; sudo apt install -y software-properties-common
+$ sudo add-apt-repository universe
+$ sudo apt update &amp;&amp; sudo apt install -y ros-jazzy-desktop</code></pre>
+    </div>
+    <div class="admonition">
+      <div class="admonition-title">Note</div>
+      <p>Placeholder note — use this block for important callouts.</p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 3: Installing TurtleBot3 Packages    -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="installing-turtlebot3">
+    <h2>3. Installing TurtleBot3 Packages</h2>
+    <p>
+      Placeholder paragraph for TurtleBot3 package installation.
+      The <code>turtlebot3</code> packages provide simulation and hardware support.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ sudo apt install -y ros-jazzy-turtlebot3*
+$ echo 'export TURTLEBOT3_MODEL=burger' &gt;&gt; ~/.bashrc</code></pre>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 4: First Play with Gazebo            -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="gazebo">
+    <h2>4. First Play with Gazebo Simulation World</h2>
+    <p>
+      Placeholder paragraph about launching Gazebo with TurtleBot3.
+      You will learn to spawn the robot in a <span class="highlight-text">simulated environment</span>
+      and drive it using keyboard teleoperation.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ source /opt/ros/jazzy/setup.bash
+$ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</code></pre>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 5: SLAM                              -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="slam">
+    <h2>5. SLAM</h2>
+    <p>
+      Placeholder paragraph about Simultaneous Localization and Mapping.
+      SLAM allows the robot to build a map of its environment while
+      simultaneously tracking its own location using <code>slam_toolbox</code>.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch slam_toolbox online_async_launch.py</code></pre>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 6: Navigation                        -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="navigation">
+    <h2>6. Navigation</h2>
+    <p>
+      Placeholder paragraph about the ROS2 Navigation2 stack.
+      Nav2 provides autonomous navigation capabilities including
+      <span class="highlight-text">path planning</span> and <span class="highlight-text">obstacle avoidance</span>.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch nav2_bringup navigation_launch.py</code></pre>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- Section 7: Unitree Go2 & Teleoperating       -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section" id="unitree-go2">
+    <h2>7. Installing Unitree Go2 and Teleoperating</h2>
+    <p>
+      Placeholder paragraph about setting up the Unitree Go2 quadruped robot
+      with ROS2 and teleoperating it. This section covers the
+      <code>unitree_ros2</code> packages and joystick control.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ cd ~/ros2_ws/src
+$ git clone https://github.com/unitreerobotics/unitree_ros2.git
+$ cd ~/ros2_ws &amp;&amp; colcon build</code></pre>
+    </div>
+  </div>
+
+</div><!-- /.main -->
+
+<script>
+// ── Tab switching ──
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tabs = btn.closest('.tabs');
+    tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    tabs.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    tabs.querySelector('#tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── Copy button (strips leading "$ ") ──
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.nextElementSibling.textContent;
+    const cleaned = code.split('\n').map(line => {
+      return line.replace(/^\$\s?/, '');
+    }).join('\n').trim();
+    navigator.clipboard.writeText(cleaned).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  });
+});
+
+// ── Mobile menu toggle ──
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+menuToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+});
+
+// ── Active sidebar link on scroll ──
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => link.classList.remove('active'));
+      const active = document.querySelector('.sidebar-nav a[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
