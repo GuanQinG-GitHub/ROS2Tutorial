@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>First Play with Gazebo — Tutorial to Robotic Simulation</title>
+<title>First Glance at Robotic Simulator — Tutorial to Robotic Simulation</title>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -19,8 +19,7 @@
   <div class="sidebar-nav">
     <a href="index.html">Installing the Virtual Machine</a>
     <a href="installing-ros2.html">Installing ROS2 Jazzy</a>
-    <a href="installing-turtlebot3.html">Installing TurtleBot3 Packages</a>
-    <a href="gazebo.html" class="active">First Play with Gazebo</a>
+    <a href="gazebo.html" class="active">First Glance at Robotic Simulator</a>
     <a href="slam.html">SLAM</a>
     <a href="navigation.html">Navigation</a>
     <a href="unitree-go2.html">Unitree Go2 &amp; Teleoperating</a>
@@ -28,14 +27,107 @@
 </nav>
 
 <div class="main">
-  <h1 class="page-title">First Play with Gazebo Simulation World</h1>
+  <h1 class="page-title">First Glance at Robotic Simulator</h1>
 
   <div class="section">
     <p>
-      Placeholder section about launching Gazebo with TurtleBot3.
+      Before proceeding, make sure you have completed the previous sections.
     </p>
+    <p>The following steps are adapted from the official Turtlebot3 documentation at <a class="inline-link" href="https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/#pc-setup" target="_blank">https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/#pc-setup</a>. Refer to their website for more details.</p>
+    <h3> Step 1: Install the Simulator and Configure the Environment</h3>
+    <p>
+      First, run the commands below to install the simulator.
+    </p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ sudo apt-get update
+$ sudo apt-get install curl lsb-release gnupg
+$ sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+$ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+$ sudo apt-get update
+$ sudo apt-get install gz-harmonic
+$ sudo apt install ros-jazzy-cartographer
+$ sudo apt install ros-jazzy-cartographer-ros
+$ sudo apt install ros-jazzy-navigation2
+$ sudo apt install ros-jazzy-nav2-bringup</code></pre>
+    </div>
+    <p> Make sure the installation above completes successfully. Then run the commands below to install some wrapper packages. This step takes approximately <span class="highlight-text">8 minutes</span>.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ source /opt/ros/jazzy/setup.bash
+$ mkdir -p ~/turtlebot3_ws/src
+$ cd ~/turtlebot3_ws/src/
+$ git clone -b jazzy https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+$ git clone -b jazzy https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+$ git clone -b jazzy https://github.com/ROBOTIS-GIT/turtlebot3.git
+$ sudo apt install python3-colcon-common-extensions
+$ cd ~/turtlebot3_ws
+$ colcon build --symlink-install
+$ echo 'source ~/turtlebot3_ws/install/setup.bash' >> ~/.bashrc
+$ source ~/.bashrc
+$ echo 'export ROS_DOMAIN_ID=30 #TURTLEBOT3' >> ~/.bashrc
+$ echo 'export TURTLEBOT3_MODEL=waffle_pi' >> ~/.bashrc
+$ echo 'export LIBGL_ALWAYS_SOFTWARE=1' >> ~/.bashrc
+$ source ~/.bashrc</code></pre>
+    </div>
+    <p> Let's run a simple test to confirm the installation was successful. Run the command below.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ which gz</code></pre>
+    </div>
+    <p> If the output is <code> /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz</code>, which is the file path to the Gazebo simulator, the command was successful. Next, let's launch the Gazebo simulator for a further test. Run the command below in the terminal.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ gz sim</code></pre>
+    </div>
+    <p> This command launches the <code>Quick start</code> window of the Gazebo simulator, as shown in the figure below.</p>
+    <div class="figure">
+      <img src="Figures/gazebo1.png">
+    </div>
+    <p> Then, feel free to open any of the demo simulations that interest you, e.g., <code>NAO Joint Control</code>, shown in the figure below. Note that, depending on the hardware resources (e.g., memory size and number of CPU cores) you assign to the virtual machine, it may take tens of seconds to load the simulation world.</p>
+    <div class="figure">
+      <img src="Figures/gazebo2.png">
+    </div>
+    <p> If the <code>NAO</code> simulation opens successfully, you have <span class="highlight-text"> successfully</span> installed the robotic simulator we need. As marked in the figure above, you can adjust the slider to set the desired joint positions of the NAO humanoid robot, then click the play button at the top to start the simulation; the NAO humanoid should move accordingly.</p>
+    <h3> Step 2: Sensor Measurements — How Robots Perceive the World</h3>
+    <p> Next, we will walk through some common sensors used on robots to perceive the environment.</p>
+    <p> Run the command below to launch the simulator. You should see the simulation environment shown in the figure below, where the mobile robot is marked; you can zoom in with your mouse.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</code></pre>
+    </div>
+    <div class="figure">
+      <img src="Figures/gazebo3.png">
+    </div>
+    <p> Next, open another terminal by clicking the button shown in the figure below. We need a second terminal because the first one is exclusively occupied running the command that launches and maintains the simulator. In this new terminal, we will launch a tool to visualize the robot's sensor measurements.</p>
+    <div class="figure">
+      <img src="Figures/gazebo4.png">
+    </div>
+    <p> In the new terminal, run the command below to launch the visualization tool, as shown in the figure below. By default, the tool primarily displays the laser scan (dense red dots) from the robot's LiDAR sensor. Comparing it with the simulator on the right-hand side, you can roughly align the laser scan with the shape of the environment. Once you can align this information, you have grasped the core idea of <span class="highlight-text">SLAM</span> — the robot localizes itself by aligning its sensor measurements (e.g., the laser scan) with the environment to determine where it is.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_bringup rviz2.launch.py</code></pre>
+    </div>
+    <div class="figure">
+      <img src="Figures/gazebo5.png">
+    </div>
+    <p> Moreover, modern robots are typically equipped with additional sensors, such as cameras. Follow the steps below to add camera measurements to the visualization tool. Images from the cameras are another source of information the robot can exploit to localize itself.</p>
+    <div class="figure">
+      <img src="Figures/gazebo6.png">
+    </div>
+    <h3>Step 3: Teleoperation</h3>
+    <p> Turn off the simulator and the visualization tool by pressing <code>Ctrl + C</code> in each terminal running the corresponding command. Then wait a few seconds and re-run the commands above to reopen the simulator and the visualization tool. Reopening refreshes the simulation world, since running it for a long time consumes a significant portion of the machine's resources.</p>
+    <p> Next, let's teleoperate the robot in the simulator. Meanwhile, the visualization tool will update as the robot moves. Open another terminal and run the command below.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 run turtlebot3_teleop teleop_keyboard</code></pre>
+    </div>
+    <p>When you see the terminal output shown in the figure below, you can begin teleoperating the robot using the on-screen instructions.</p>
+    <div class="figure">
+      <img src="Figures/gazebo7.png">
+    </div>
+    <p>If the robot moves according to your teleoperation commands, congratulations! If it does not, your personal computer may not be powerful enough to run this physics-based simulator. Try rebooting the virtual machine and attempting again.</p>
   </div>
-</div>
 
 <script src="script.js"></script>
 </body>
