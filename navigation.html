@@ -30,9 +30,57 @@
   <h1 class="page-title">Navigation</h1>
 
   <div class="section">
+    <div class="admonition">
+      <div class="admonition-title">Note</div>
+      <p>The following steps take approximately 30 minutes to complete.</p>
+    </div>
     <p>
-      Placeholder section about the ROS2 Navigation2 stack.
+      Before proceeding, make sure you have completed the previous sections.
     </p>
+    <p>The following steps are based on the official Turtlebot3 documentation at <a class="inline-link" href="https://emanual.robotis.com/docs/en/platform/turtlebot3/nav_simulation/" target="_blank">https://emanual.robotis.com/docs/en/platform/turtlebot3/nav_simulation/</a>. Refer to their website for more details.</p>
+    <p>
+      In the previous section, we built an environment map from laser scan data. With this map, the robot can localize itself. In this section, we will use that same map to enable autonomous navigation.
+    </p>
+    <h3>Step 1: Launch the Simulator</h3>
+    <p>Open a terminal tab and run the command below to launch the simulator and spawn the mobile robot. You can substitute this with the house environment command from the previous section for additional practice, but for now please follow this guide first.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</code></pre>
+    </div>
+    <h3>Step 2: Launch Autonomous Navigation</h3>
+    <p>This time, instead of teleoperation, we will launch the autonomous navigation stack. Run the command below in a new terminal tab. If you saved your map with a different filename in the previous section, update <code>map.yaml</code> in the command accordingly.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=$HOME/map.yaml</code></pre>
+    </div>
+    <p>This command launches the visualization tool again, as shown below. Notice that the displayed map may appear incomplete — the white areas indicate regions that were not fully explored during the SLAM step.</p>
+    <div class="figure">
+      <img src="Figures/nav1.png">
+    </div>
+    <p>Next, we need to provide the robot with an initial pose estimate. As shown in the figure below, click the <code>2D Pose Estimate</code> button in the top toolbar, then click on the map at approximately where the robot is located and drag the green arrow to match the robot's orientation. This gives the robot a rough starting position, after which it runs the AMCL localization algorithm to precisely determine its pose using the laser scan data.</p>
+    <div class="figure">
+      <img src="Figures/nav2.png">
+    </div>
+    <p>Once the robot has localized itself, the visualization will stabilize and display a color-coded costmap. The colors represent the navigation cost at each location — areas closer to obstacles appear more intense, indicating higher risk of collision, which the robot will actively avoid during navigation.</p>
+    <div class="figure">
+      <img src="Figures/nav3.png">
+    </div>
+    <p>You are now ready to set a navigation goal. Click the <code>Nav2 Goal</code> button in the top toolbar, then click on your desired target position in the map and drag the green arrow to specify the target orientation, as shown below.</p>
+    <div class="figure">
+      <img src="Figures/nav4.png">
+    </div>
+    <p>Once the goal is set, the navigation algorithm plans a path (shown as the red line in the figure below) and computes control commands to drive the robot along the planned path toward the target position and orientation.</p>
+    <div class="figure">
+      <img src="Figures/nav5.png">
+    </div>
+    <p>You now know how to autonomously navigate a robot in a mapped environment!</p>
+    <h3>Additional: Navigation in Other Environments</h3>
+    <p>Repeat the steps above with two differences. First, replace the Step 1 command with the one below to launch the house environment.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_gazebo turtlebot3_house.launch.py</code></pre>
+    </div>
+    <p>Second, update the map filename in the Step 2 command to match the map you saved for the house environment.</p>
   </div>
 </div>
 
