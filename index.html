@@ -132,16 +132,88 @@
         </p>
       </div>
       <div class="tab-content" id="tab-windows">
-        <h3>Windows Setup</h3>
+        <h3>Step 1: Install the Oracle VirtualBox Application</h3>
         <p>
-          Placeholder paragraph for Windows instructions. Use
-          <span class="highlight-text">highlighted text</span> for key points,
-          and <code>inline code</code> for paths like <code>C:\Users\</code>.
+          Oracle VirtualBox is the virtualization tool we will use to create and run a Linux virtual machine on Windows. Visit <a class="inline-link" href="https://www.virtualbox.org/wiki/Downloads" target="_blank">https://www.virtualbox.org/wiki/Downloads</a> to download and install Oracle VirtualBox. Once the installation is complete, open the application — we will return to it shortly.
         </p>
-        <div class="code-block-wrapper">
-          <button class="copy-btn">Copy</button>
-          <pre><code>$ wsl --install -d Ubuntu-24.04
-$ # WSL will restart your machine</code></pre>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu1.png">
+        </div>
+        <h3>Step 2: Download the Ubuntu 24.04 Image</h3>
+        <p>
+          Navigate to <a class="inline-link" href="https://releases.ubuntu.com/24.04/" target="_blank">https://releases.ubuntu.com/24.04/</a> to download the Desktop image. Make sure you select the <span class="highlight-text">AMD64</span> version, not ARMv8 (which is for macOS systems). The download may take up to 20 minutes depending on server availability.
+        </p>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu2.png">
+        </div>
+        <h3>Step 3: Create the Virtual Machine</h3>
+        <p>
+          Follow these steps to create the Ubuntu 24.04 virtual machine in Oracle VirtualBox:
+        </p>
+        <ul>
+          <li>Return to the open VirtualBox application and click <code>New</code>. Enter a name for the VM, then browse to the <code>.iso</code> image you downloaded in Step 2. Click <code>Next</code>.</li>
+          <div class="figure">
+            <img src="Figures/windows_ubuntu3.png">
+          </div>
+          <li>Create your username and password. Choose a short, simple password — you will need to enter it frequently. Enable the <code>Install Guest Additions</code> option, then click <code>Next</code>.</li>
+          <div class="figure">
+            <img src="Figures/windows_ubuntu4.png">
+          </div>
+          <li>Configure the hardware settings: set memory to at least <code>8192</code> MB, CPU cores to at least <code>4</code>, and disk size to at least <code>100</code> GB. Enable <code>Use EFI</code>. Click <code>Next</code>.</li>
+          <div class="figure">
+            <img src="Figures/windows_ubuntu5.png">
+          </div>
+          <li>Review the summary and click <code>Finish</code>. After a few seconds, the virtual machine window will appear automatically.</li>
+        </ul>
+        <h3>Step 4: Install Ubuntu on the Virtual Machine</h3>
+        <p>
+            After the virtual machine window appears, you will see the Ubuntu installation screen below. Press <code>Enter</code> to begin the installation.
+        </p>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu6.png">
+        </div>
+        <p>
+            After approximately <span class="highlight-text">30 seconds</span>, you will see the screen below, indicating that Ubuntu 24.04 has been <span class="highlight-text">successfully</span> loaded. Click the window to continue.
+        </p>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu7.png">
+        </div>
+        <p>
+            You don't need to do anything; the installation will proceed automatically, as shown in the figure below. This step takes approximately <span class="highlight-text">10 minutes</span>.
+        </p>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu8.png">
+        </div>
+        <p>
+          When the installation is complete, you will see the screen below. Click <code>Restart now</code>. VirtualBox will then restart the Ubuntu system.
+        </p>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu9.png">
+        </div>
+        <p>
+          After the system restarts, you will see the login screen below. Click your username and enter your password to log in.
+        </p>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu10.png">
+        </div>
+        <p>
+          Congratulations — you have successfully installed the virtual machine!
+        </p>
+        <h3>Step 5: Configure the Required Virtual Machine Settings</h3>
+        <p>
+          Refer to the figure below and follow these steps to configure the required settings for the virtual machine.
+        </p>
+        <ul>
+          <li>Make sure you power off the virtual machine.</li>
+          <li>Click the <code>Settings</code> button.</li>
+          <li>Click the <code>Expert</code> tab.</li>
+          <li>Click the <code>Display</code> entry.</li>
+          <li>Set the video memory to its maximum value, e.g., <code>256 MB</code> as shown in the figure below.</li>
+          <li>Enable the <code>3D Acceleration</code> option.</li>
+          <li>Click the <code>OK</code> button to save the changes.</li>
+        </ul>
+        <div class="figure">
+          <img src="Figures/windows_ubuntu11.png">
         </div>
       </div>
     </div>
