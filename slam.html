@@ -27,12 +27,78 @@
 </nav>
 
 <div class="main">
-  <h1 class="page-title">SLAM</h1>
+  <h1 class="page-title">SLAM (Simultaneous Localization and Mapping)</h1>
 
   <div class="section">
+    <div class="admonition">
+      <div class="admonition-title">Note</div>
+      <p>The following steps take approximately 45 minutes to complete.</p>
+    </div>  
     <p>
-      Placeholder section about Simultaneous Localization and Mapping.
+      Before proceeding, make sure you have completed the previous sections.
     </p>
+    <p>The following steps are based on the official Turtlebot3 documentation at <a class="inline-link" href="https://emanual.robotis.com/docs/en/platform/turtlebot3/slam_simulation/" target="_blank">https://emanual.robotis.com/docs/en/platform/turtlebot3/slam_simulation/</a>. Refer to their website for more details.</p>
+    <p>As we saw in the previous section, the robot perceives its environment through sensor measurements such as laser scans from its LiDAR. In this section, we will explore one of the most important topics in robotics: SLAM (Simultaneous Localization and Mapping).</p>
+    <h3>Step 1: Launch the Simulator</h3>
+    <p>Open a terminal and run the command below to launch the simulator and spawn the mobile robot. This is the same command we used in the previous section.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py</code></pre>
+    </div>
+    <p>After launching, you should see the simulator with the mobile robot as shown below.</p>
+    <div class="figure">
+      <img src="Figures/slam1.png">
+    </div>
+    <h3>Step 2: Launch the SLAM Program</h3>
+    <p>Open a new terminal tab and run the command below. This launches the visualization window we used in the previous section, but this time it displays additional mapping information as shown in the figure below.</p>
+    <p>The robot is now building a map of its environment! In the visualization tool, the light gray areas represent free space where laser beams can pass through unobstructed. The dark green areas are unknown to the robot — at its current position, the laser beams are reflected by walls and pillars, so the robot has no information about what lies behind those obstacles.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True</code></pre>
+    </div>
+    <div class="figure">
+      <img src="Figures/slam2.png">
+    </div>
+    <h3>Step 3: Launch the Teleoperation</h3>
+    <p>Open another terminal tab and run the command below to launch teleoperation, just as we did in the previous section. This allows us to drive the robot around and explore more of the environment.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 run turtlebot3_teleop teleop_keyboard</code></pre>
+    </div>
+    <p>As you teleoperate the robot to new locations, the map becomes more complete and the unknown areas shrink, as shown in the figure below.</p>
+    <div class="figure">
+      <img src="Figures/slam3.png">
+    </div>
+    <p>Continue teleoperating the robot until the map has minimal unknown areas. An acceptable result is shown below. Do not terminate any running programs — we will save the map in the next step.</p>
+    <div class="figure">
+      <img src="Figures/slam4.png">
+    </div>
+    <h3>Step 4: Save the Map</h3>
+    <p>Open another terminal tab and run the command below to save the map.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 run nav2_map_server map_saver_cli -f ~/map</code></pre>
+    </div>
+    <p>The terminal will display the save status as shown below.</p>
+    <div class="figure">
+      <img src="Figures/slam5.png">
+    </div>
+    <p>You can verify the saved files by opening the file explorer and navigating to the <code>Home</code> folder, where the map files are stored.</p>
+    <div class="figure">
+      <img src="Figures/slam6.png">
+    </div>
+    <p>You now know how to map an environment! This map is essential for the robot to localize itself by aligning its laser scan measurements against the mapped data. A widely used localization algorithm is AMCL (Adaptive Monte Carlo Localization) — you can learn more about it at <a class="inline-link" href="https://www.yahboom.net/public/upload/upload-html/1722937503/7.%20AMCL%20Adaptive%20Monte%20Carlo%20Localization.html" target="_blank">this link</a>.</p>
+    <h3>Additional: Mapping Other Environments</h3>
+    <p>Repeat the steps above, but replace the Step 1 command with the one below to launch a different environment — a house.</p>
+    <div class="code-block-wrapper">
+      <button class="copy-btn">Copy</button>
+      <pre><code>$ ros2 launch turtlebot3_gazebo turtlebot3_house.launch.py</code></pre>
+    </div>
+    <p>After running the command, you should see the house environment as shown below.</p>
+    <div class="figure">
+      <img src="Figures/slam7.png">
+    </div>
+    <p>Note that saving a new map with the same command from Step 4 will overwrite the previous map files. To keep both maps, rename the existing files before saving a new one.</p>
   </div>
 </div>
 
